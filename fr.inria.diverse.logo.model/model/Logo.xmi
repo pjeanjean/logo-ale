@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<logo:Logo xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:constant="http://www.example.org/logo/expression/constant"
+    xmlns:logo="http://www.example.org/logo"
+    xmlns:statement="http://www.example.org/logo/statement"
+    xsi:schemaLocation="http://www.example.org/logo/expression/constant logo.ecore#//expression/constant http://www.example.org/logo logo.ecore http://www.example.org/logo/statement logo.ecore#//statement">
+  <instructions
+      xsi:type="statement:Right">
+    <angle xsi:type="constant:Integer"
+        value="10"/>
+  </instructions>
+</logo:Logo>
