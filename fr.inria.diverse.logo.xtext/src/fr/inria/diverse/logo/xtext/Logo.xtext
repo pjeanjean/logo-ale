@@ -13,11 +13,11 @@ import "platform:/resource/fr.inria.diverse.logo.model/model/logo.ecore#//statem
 import "platform:/resource/fr.inria.diverse.logo.model/model/logo.ecore#//expression/binary" as binary
 import "platform:/resource/fr.inria.diverse.logo.model/model/logo.ecore#//expression/unary" as unary
 
-Logo returns logo::Logo:
-	Interpreter | ((statements+=Statement)+);
-
 Interpreter returns logo::Interpreter:
-	'~' (statement=Statement | expression=Expression);
+	'~' (instruction=Statement | instruction=Expression) | instruction=Logo;
+
+Logo returns logo::Logo:
+	(statements+=Statement)+;
 
 Parameter returns logo::Parameter:
 	':' name=ID;

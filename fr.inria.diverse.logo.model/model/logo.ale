@@ -49,6 +49,15 @@ class Turtle {
 }
 
 open class Logo {
+    @step
+	def void run(logolang::Turtle turtle, logolang::SymbolTable st) {
+		for (s in self.statements) {
+			s.execute(turtle, st);
+		}
+	}
+}
+
+open class Interpreter {		
 	logolang::Turtle turtle;
 	logolang::SymbolTable st;
 	
@@ -65,38 +74,22 @@ open class Logo {
 		self.st.init();
 	}
 
-    @step
-    @main
-	def void run() {
-		for (s in self.statements) {
-			s.execute(self.turtle, self.st);
-		}
-	}
-}
-	
-open class Interpreter extends Logo {		
-	@init
-	def void init() {
-		self.turtle := logolang::Turtle.create();
-		self.turtle.xpos := 0.0;
-		self.turtle.ypos := 0.0;
-		self.turtle.direction := 0.0;
-		self.turtle.pendown := false;
-		self.turtle.canvas := logolang::Canvas.create();
-		self.turtle.canvas.segments := Sequence{};
-		self.st := logolang::SymbolTable.create();
-		self.st.init();
-	}
-
 	@main
 	def void run() {
-		if (self.statement != null) {
-			self.statement.execute(self.turtle, self.st);
+		if (self.instruction.oclIsKindOf(logo::Statement)) {
+			logo::Statement statement := self.instruction;
+			statement.execute(self.turtle, self.st);
 			('x: ' + self.turtle.xpos + ' | y: ' + self.turtle.ypos + ' | direction: ' + self.turtle.direction
 				+ ' | canvas: ' + self.turtle.canvas.segments).log();
 		} else {
-			if (self.expression != null) {
-				self.expression.compute(self.st).log();
+			if (self.instruction.oclIsKindOf(logo::Expression)) {
+				logo::Expression expression := self.instruction;
+				expression.compute(self.st).log();
+			} else {
+				if (self.instruction.oclIsKindOf(logo::Logo)) {
+					logo::Logo logo := self.instruction;
+					logo.run(self.turtle, self.st);
+				}
 			}
 		}
 	}

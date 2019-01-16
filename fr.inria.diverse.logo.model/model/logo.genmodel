@@ -23,9 +23,9 @@
     </genClasses>
     <genClasses image="false" ecoreClass="logo.ecore#//Value"/>
     <genClasses ecoreClass="logo.ecore#//Interpreter">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference logo.ecore#//Interpreter/statement"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference logo.ecore#//Interpreter/expression"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference logo.ecore#//Interpreter/instruction"/>
     </genClasses>
+    <genClasses image="false" ecoreClass="logo.ecore#//Instruction"/>
     <nestedGenPackages prefix="Statement" disposableProviderFactory="true" ecorePackage="logo.ecore#//statement">
       <genClasses ecoreClass="logo.ecore#//statement/Right">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference logo.ecore#//statement/Right/angle"/>

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="logo" nsURI="http://www.example.org/logo" nsPrefix="logo">
-  <eClassifiers xsi:type="ecore:EClass" name="Logo">
+  <eClassifiers xsi:type="ecore:EClass" name="Logo" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="statements" upperBound="-1"
         eType="#//Statement" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Statement" abstract="true" interface="true"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Expression" abstract="true" interface="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Statement" abstract="true" interface="true"
+      eSuperTypes="#//Instruction"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Expression" abstract="true" interface="true"
+      eSuperTypes="#//Instruction"/>
   <eClassifiers xsi:type="ecore:EClass" name="Parameter">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
@@ -14,12 +16,11 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Value" abstract="true" interface="true"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Interpreter" eSuperTypes="#//Logo">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="statement" eType="#//Statement"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
-        containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Interpreter">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" lowerBound="1"
+        eType="#//Instruction" containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Instruction" abstract="true"/>
   <eSubpackages name="statement" nsURI="http://www.example.org/logo/statement" nsPrefix="statement">
     <eClassifiers xsi:type="ecore:EClass" name="Right" eSuperTypes="#//Statement">
       <eStructuralFeatures xsi:type="ecore:EReference" name="angle" lowerBound="1"
