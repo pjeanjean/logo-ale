@@ -107,4 +107,4 @@ IntValue returns constant::IntValue:
 	value=INT;
 
 BoolValue returns constant::BoolValue:
-	{constant::BoolValue} value?=('true' | 'false');
+	{constant::BoolValue} (value?='true' | 'false');

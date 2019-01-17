@@ -34,6 +34,10 @@ class Segment {
 	double x2;
 	double y1;
 	double y2;
+	
+	def String representation() {
+		result := '(' + self.x1 + ', ' + self.x2 + ', ' + self.y1 + ', ' + self.y2 + ')';
+	}
 }
 
 class Canvas {
@@ -80,11 +84,16 @@ open class Interpreter {
 			logo::Statement statement := self.instruction;
 			statement.execute(self.turtle, self.st);
 			('x: ' + self.turtle.xpos + ' | y: ' + self.turtle.ypos + ' | direction: ' + self.turtle.direction
-				+ ' | canvas: ' + self.turtle.canvas.segments).log();
+				+ ' | canvas: ' + self.turtle.canvas.segments->collect(seg | seg.representation())).log();
 		} else {
 			if (self.instruction.oclIsKindOf(logo::Expression)) {
 				logo::Expression expression := self.instruction;
-				expression.compute(self.st).log();
+				logo::Value res := expression.compute(self.st);
+				if (res = null) {
+					'null'.log();
+				} else {
+					res.value.log();
+				}
 			} else {
 				if (self.instruction.oclIsKindOf(logo::Logo)) {
 					logo::Logo logo := self.instruction;
@@ -128,6 +137,9 @@ open class Left {
 		if (value.oclIsKindOf(value::IntValue)) {
 			value::IntValue nvalue := value;
 		    turtle.direction := turtle.direction - nvalue.value.toDouble();
+		    while (turtle.direction < -180.0) {
+		    	turtle.direction := turtle.direction + 360.0;
+		    }
 		}
 	}
 }
@@ -138,6 +150,9 @@ open class Right {
 		if (value.oclIsKindOf(value::IntValue)) {
 			value::IntValue nvalue := value;
 		    turtle.direction := turtle.direction + nvalue.value.toDouble();
+		    while (turtle.direction > 180.0) {
+		    	turtle.direction := turtle.direction - 360.0;
+		    }
 		}
 	}
 }
@@ -406,10 +421,11 @@ open class Lower {
 		}
 	}
 }
-open class And {
+open class logo.expression.extended.And {
 	@step
 	def Value compute(SymbolTable st) {
 		value::BoolValue rvalue := value::BoolValue.create();
+		rvalue.value := true;
 		for (e in self.expressions) {
 		    logo::Value value := e.compute(st);
 		    if (value.oclIsKindOf(value::BoolValue) and rvalue != null) {
@@ -422,10 +438,11 @@ open class And {
 		result := rvalue;
 	}
 }
-open class Or {
+open class logo.expression.extended.Or {
 	@step
 	def Value compute(SymbolTable st) {
 		value::BoolValue rvalue := value::BoolValue.create();
+		rvalue.value := false;
 		for (e in self.expressions) {
 		    logo::Value value := e.compute(st);
 		    if (value.oclIsKindOf(value::BoolValue) and rvalue != null) {
