@@ -17,8 +17,8 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Value" abstract="true" interface="true"/>
   <eClassifiers xsi:type="ecore:EClass" name="Interpreter">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" lowerBound="1"
-        eType="#//Instruction" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" eType="#//Instruction"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Instruction" abstract="true"/>
   <eSubpackages name="statement" nsURI="http://www.example.org/logo/statement" nsPrefix="statement">
