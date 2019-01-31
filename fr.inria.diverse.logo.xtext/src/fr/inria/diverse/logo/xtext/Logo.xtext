@@ -14,7 +14,7 @@ import "platform:/resource/fr.inria.diverse.logo.model/model/logo.ecore#//expres
 import "platform:/resource/fr.inria.diverse.logo.model/model/logo.ecore#//expression/unary" as unary
 
 Interpreter returns logo::Interpreter:
-	{logo::Interpreter} ('~' (instruction=Instruction)?)+ | instruction=Logo;
+	{logo::Interpreter} ('~' instruction=(Expression|Statement) | instruction=Logo)?;
 	
 Logo returns logo::Logo:
 	(statements+=Statement)+;
@@ -27,9 +27,6 @@ Statement returns logo::Statement:
 
 Expression returns logo::Expression:
 	EqualsGreaterLower | ExtendedExpression;
-
-Instruction returns logo::Instruction:
-	Expression | Statement;
 
 ExtendedExpression returns expression::ExtendedExpression:
 	Or | And;

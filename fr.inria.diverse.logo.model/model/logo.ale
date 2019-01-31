@@ -36,7 +36,7 @@ class Segment {
 	double y2;
 	
 	def String representation() {
-		result := '(' + self.x1 + ', ' + self.x2 + ', ' + self.y1 + ', ' + self.y2 + ')';
+		result := '(' + self.x1 + ', ' + self.y1 + ', ' + self.x2 + ', ' + self.y2 + ')';
 	}
 }
 
@@ -52,19 +52,10 @@ class Turtle {
 	logolang::Canvas canvas;
 }
 
-open class Logo {
-    @step
-	def void run(logolang::Turtle turtle, logolang::SymbolTable st) {
-		for (s in self.statements) {
-			s.execute(turtle, st);
-		}
-	}
-}
-
-open class Interpreter {		
+open class Interpreter {       
 	logolang::Turtle turtle;
 	logolang::SymbolTable st;
-	
+
 	@init
 	def void init() {
 		self.turtle := logolang::Turtle.create();
@@ -77,29 +68,39 @@ open class Interpreter {
 		self.st := logolang::SymbolTable.create();
 		self.st.init();
 	}
-
+	
 	@main
 	def void run() {
-		if (self.instruction.oclIsKindOf(logo::Statement)) {
-			logo::Statement statement := self.instruction;
-			statement.execute(self.turtle, self.st);
-			('x: ' + self.turtle.xpos + ' | y: ' + self.turtle.ypos + ' | direction: ' + self.turtle.direction
-				+ ' | canvas: ' + self.turtle.canvas.segments->collect(seg | seg.representation())).log();
+		self.instruction.interpret(self.turtle, self.st);
+	}
+}
+
+open class Logo {
+	@step
+	def void interpret(logolang::Turtle turtle, logolang::SymbolTable st) {
+		for (s in self.statements) {
+			s.execute(turtle, st);
+		}
+	}
+}
+
+open class Statement {
+	@step
+	def void interpret(logolang::Turtle turtle, logolang::SymbolTable st) {
+		self.execute(turtle, st);
+		('x: ' + turtle.xpos + ' | y: ' + turtle.ypos + ' | direction: ' + turtle.direction
+			+ ' | canvas: ' + turtle.canvas.segments->collect(seg | seg.representation())).log();
+	}
+}
+
+open class logo.Expression {
+	@step
+	def void interpret(logolang::Turtle turtle, logolang::SymbolTable st) {
+		logo::Value res := self.compute(st);
+		if (res = null) {
+			'null'.log();
 		} else {
-			if (self.instruction.oclIsKindOf(logo::Expression)) {
-				logo::Expression expression := self.instruction;
-				logo::Value res := expression.compute(self.st);
-				if (res = null) {
-					'null'.log();
-				} else {
-					res.value.log();
-				}
-			} else {
-				if (self.instruction.oclIsKindOf(logo::Logo)) {
-					logo::Logo logo := self.instruction;
-					logo.run(self.turtle, self.st);
-				}
-			}
+			res.value.log();
 		}
 	}
 }
@@ -130,7 +131,7 @@ open class Procedure {
 	}
 }
 
-open class Left {
+open class Left extends Statement {
 	@step
 	def void execute(Turtle turtle, SymbolTable st) {
 		logo::Value value := self.angle.compute(st);
@@ -143,7 +144,7 @@ open class Left {
 		}
 	}
 }
-open class Right {
+open class Right extends Statement {
 	@step
 	def void execute(Turtle turtle, SymbolTable st) {
 		logo::Value value := self.angle.compute(st);
@@ -156,7 +157,7 @@ open class Right {
 		}
 	}
 }
-open class Forward {
+open class Forward extends Statement {
 	@step
 	def void execute(Turtle turtle, SymbolTable st) {
 		logo::Value value := self.step.compute(st);
@@ -178,26 +179,26 @@ open class Forward {
 		}
 	}
 }
-open class PenDown {
+open class PenDown extends Statement {
 	@step
 	def void execute(Turtle turtle, SymbolTable st) {
 		turtle.pendown := true;
 	}
 }
-open class PenUp {
+open class PenUp extends Statement {
 	@step
 	def void execute(Turtle turtle, SymbolTable st) {
 		turtle.pendown := false;
 	}
 }
-open class ProcedureDefinition {
+open class ProcedureDefinition extends Statement {
 	def void execute(Turtle turtle, SymbolTable st) {
 		symbol::Procedure procedure := symbol::Procedure.create();
 		procedure.init(self);
 		st.register(procedure);
 	}
 }
-open class ProcedureCall {
+open class ProcedureCall extends Statement {
 	@step
 	def void execute(Turtle turtle, SymbolTable st) {
 		ProcedureDefinition definition := st.find(self.name).definition;
@@ -216,7 +217,7 @@ open class ProcedureCall {
 		}
 	}
 }
-open class Block {
+open class Block extends Statement {
 	@step
 	def void execute(Turtle turtle, SymbolTable st) {
 		logolang::SymbolTable nst := logolang::SymbolTable.create();
@@ -226,7 +227,7 @@ open class Block {
 		}
 	}
 }
-open class If {
+open class If extends Statement {
 	@step
 	def void execute(Turtle turtle, SymbolTable st) {
 		logo::Value value := self.condition.compute(st);
@@ -242,7 +243,7 @@ open class If {
 		}
 	}
 }
-open class While {
+open class While extends Statement {
 	@step
 	def void execute(Turtle turtle, SymbolTable st) {
 		while (self.condition.compute(st)) {
@@ -250,7 +251,7 @@ open class While {
 		}
 	}
 }
-open class Repeat {
+open class Repeat extends Statement {
 	@step
 	def void execute(Turtle turtle, SymbolTable st) {
 		logo::Value value := self.condition.compute(st);
@@ -265,7 +266,7 @@ open class Repeat {
 	}
 }
 
-open class logo.expression.constant.IntValue {
+open class logo.expression.constant.IntValue extends Expression {
 	@step
 	def Value compute(SymbolTable st) {
 		value::IntValue rvalue := value::IntValue.create();
@@ -273,7 +274,7 @@ open class logo.expression.constant.IntValue {
 		result := rvalue;
 	}
 }
-open class logo.expression.constant.BoolValue {
+open class logo.expression.constant.BoolValue extends Expression {
 	@step
 	def Value compute(SymbolTable st) {
 		value::BoolValue rvalue := value::BoolValue.create();
@@ -281,7 +282,7 @@ open class logo.expression.constant.BoolValue {
 		result := rvalue;
 	}
 }
-open class Not {
+open class Not extends Expression {
 	@step
 	def Value compute(SymbolTable st) {
 		logo::Value value := self.expression.compute(st);
@@ -295,7 +296,7 @@ open class Not {
 		}
 	}
 }
-open class Opposite {
+open class Opposite extends Expression {
 	@step
 	def Value compute(SymbolTable st) {
 		logo::Value value := self.expression.compute(st);
@@ -309,7 +310,7 @@ open class Opposite {
 		}
 	}
 }
-open class Minus {
+open class Minus extends Expression {
 	@step
 	def Value compute(SymbolTable st) {
 		logo::Value value1 := self.leftExpression.compute(st);
@@ -325,7 +326,7 @@ open class Minus {
 		}
 	}
 }
-open class Plus {
+open class Plus extends Expression {
 	@step
 	def Value compute(SymbolTable st) {
 		logo::Value value1 := self.leftExpression.compute(st);
@@ -341,7 +342,7 @@ open class Plus {
 		}
 	}
 }
-open class Mult {
+open class Mult extends Expression {
 	@step
 	def Value compute(SymbolTable st) {
 		logo::Value value1 := self.leftExpression.compute(st);
@@ -357,7 +358,7 @@ open class Mult {
 		}
 	}
 }
-open class Div {
+open class Div extends Expression {
 	@step
 	def Value compute(SymbolTable st) {
 		logo::Value value1 := self.leftExpression.compute(st);
@@ -373,7 +374,7 @@ open class Div {
 		}
 	}
 }
-open class Equals {
+open class Equals extends Expression {
 	@step
 	def Value compute(SymbolTable st) {
 		logo::Value value1 := self.leftExpression.compute(st);
@@ -389,7 +390,7 @@ open class Equals {
 		}
 	}
 }
-open class Greater {
+open class Greater extends Expression {
 	@step
 	def Value compute(SymbolTable st) {
 		logo::Value value1 := self.leftExpression.compute(st);
@@ -405,7 +406,7 @@ open class Greater {
 		}
 	}
 }
-open class Lower {
+open class Lower extends Expression {
 	@step
 	def Value compute(SymbolTable st) {
 		logo::Value value1 := self.leftExpression.compute(st);
@@ -421,7 +422,7 @@ open class Lower {
 		}
 	}
 }
-open class logo.expression.extended.And {
+open class logo.expression.extended.And extends Expression {
 	@step
 	def Value compute(SymbolTable st) {
 		value::BoolValue rvalue := value::BoolValue.create();
@@ -438,7 +439,7 @@ open class logo.expression.extended.And {
 		result := rvalue;
 	}
 }
-open class logo.expression.extended.Or {
+open class logo.expression.extended.Or extends Expression {
 	@step
 	def Value compute(SymbolTable st) {
 		value::BoolValue rvalue := value::BoolValue.create();
@@ -455,7 +456,7 @@ open class logo.expression.extended.Or {
 		result := rvalue;
 	}
 }
-open class VariableRead {
+open class VariableRead extends Expression {
 	@step
 	def Value compute(SymbolTable st) {
 		Variable found := st.find(self.name);
