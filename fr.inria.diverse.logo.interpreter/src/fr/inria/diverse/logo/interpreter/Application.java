@@ -27,6 +27,7 @@ import org.eclipse.emf.compare.scope.IComparisonScope;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecoretools.ale.ALEInterpreter;
 import org.eclipse.emf.ecoretools.ale.core.parser.Dsl;
 import org.eclipse.emf.ecoretools.ale.core.parser.DslBuilder;
@@ -36,24 +37,26 @@ import org.eclipse.emf.ecoretools.ale.implementation.Method;
 import org.eclipse.emf.ecoretools.ale.implementation.ModelUnit;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.xtext.resource.XtextResourceSet;
-import com.google.inject.Injector;
-import fr.inria.diverse.logo.LogoPackage;
-import fr.inria.diverse.logo.xtext.LogoStandaloneSetup;
+import org.eclipse.sirius.common.tools.api.resource.ResourceSetFactory;
 
 public class Application implements IApplication {
 
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
+		String args[] = (String[]) context.getArguments().get("application.args");
+		
+		String ecorePath = args[0];
+		String alePath = args[1];
+		String extension = args[2];
+		URI modelUri = URI.createURI("dummy:/read." + extension);
+		
 		ALEInterpreter aleInterpreter = new ALEInterpreter();
-		Dsl environment = new Dsl(Arrays.asList(URI.createFileURI("/home/rhiobet/logo-ale/fr.inria.diverse.logo.model/model/logo.ecore").toString()),
-				Arrays.asList("/home/rhiobet/logo-ale/fr.inria.diverse.logo.model/model/logo.ale"));
+		Dsl environment = new Dsl(Arrays.asList(URI.createFileURI(ecorePath).toString()), Arrays.asList(alePath));
 		
-		Injector injector = new LogoStandaloneSetup().createInjectorAndDoEMFRegistration();
-		XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
-		resourceSet.getPackageRegistry().put("http://www.example.org/logo", LogoPackage.eINSTANCE);
+		ResourceSetFactory resourceSetFactory = ResourceSetFactory.createFactory();
+		ResourceSet resourceSet = resourceSetFactory.createResourceSet(modelUri);
 		
-		Resource resource = resourceSet.createResource(URI.createURI("dummy:/read.logo"));
+		Resource resource = resourceSet.createResource(modelUri);
 		resource.load(new ByteArrayInputStream(new byte[] {}), resourceSet.getLoadOptions());
 		EObject caller = resource.getContents().get(0);
 		
@@ -91,10 +94,9 @@ public class Application implements IApplication {
 				break;
 			}
 		
-			XtextResourceSet newResourceSet = injector.getInstance(XtextResourceSet.class);
-			newResourceSet.setPackageRegistry(resourceSet.getPackageRegistry());	
+			ResourceSet newResourceSet = resourceSetFactory.createResourceSet(modelUri);
 			
-			Resource newResource = newResourceSet.createResource(URI.createURI("dummy:/read.logo"));
+			Resource newResource = newResourceSet.createResource(modelUri);
 			newResource.load(new ByteArrayInputStream(("~ " + read).getBytes()), newResourceSet.getLoadOptions());
 			
 			if (newResource.getErrors().size() > 0) {

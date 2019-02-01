@@ -38,7 +38,7 @@ Export-Package: fr.inria.diverse.logo,
  fr.inria.diverse.logo.value,
  fr.inria.diverse.logo.value.impl,
  fr.inria.diverse.logo.value.util
-Require-Bundle: org.eclipse.emf.ecore;visibility:=reexport,
+Require-Bundle: org.eclipse.emf.ecore;visibility:="reexport",
  org.eclipse.core.runtime,
  org.eclipse.gemoc.executionframework.extensions.sirius;bundle-version="0.0.0";visibility:=reexport
 Bundle-ActivationPolicy: lazy
