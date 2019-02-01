@@ -104,8 +104,6 @@ public class Application implements IApplication {
 				continue;
 			}
 			
-			EObject newCaller = newResource.getContents().get(0);
-			
 			// Needed to keep the objects referenced by other changed objects
 			// TODO : Check that the referencing object is indeed changed
 			IDiffProcessor customDiffProcessor = new DiffBuilder() {
@@ -149,6 +147,7 @@ public class Application implements IApplication {
 		
 			aleInterpreter.getCurrentEngine().eval(caller, main.get(), Arrays.asList());
 		}
+		scanner.close();
 		
 		return null;
 	}
