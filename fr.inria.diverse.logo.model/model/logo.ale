@@ -71,7 +71,7 @@ open class Interpreter {
 	
 	@main
 	def void run() {
-		self.instruction.interpret(self.turtle, self.st);
+		self.instructions->last().interpret(self.turtle, self.st);
 	}
 }
 
