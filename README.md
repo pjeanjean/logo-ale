@@ -1,3 +1,3 @@
 # logo-ale
 
-Implementation of `logo` language using [ALE](https://github.com/gemoc/ale-lang)
+Implementation of `logo` interpreter using [ALE](https://github.com/gemoc/ale-lang)
