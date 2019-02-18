@@ -201,18 +201,18 @@ open class ProcedureDefinition extends Statement {
 open class ProcedureCall extends Statement {
 	@step
 	def void execute(Turtle turtle, SymbolTable st) {
-		ProcedureDefinition definition := st.find(self.name).definition;
 		logolang::SymbolTable nst := logolang::SymbolTable.create();
 		nst.init(st);
 		int i := 1;
-		while (i <= definition.parameters->size()) {
+		while (i <= self.definition.parameters->size()) {
 			symbol::Variable variable := symbol::Variable.create();
-			variable.init(definition.parameters->at(i));
+			variable.init(self.definition.parameters->at(i));
 			variable.setValue(self.parameterValues->at(i).compute(st));
 			nst.register(variable);
 			i := i + 1;
 		}
-		for (s in definition.statements) {
+		
+		for (s in self.definition.statements) {
 			s.execute(turtle, nst);
 		}
 	}

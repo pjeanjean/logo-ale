@@ -46,7 +46,8 @@
       <genClasses ecoreClass="logo.ecore#//statement/ProcedureCall">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference logo.ecore#//statement/ProcedureCall/parameterValues"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute logo.ecore#//statement/ProcedureCall/name"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference logo.ecore#//statement/ProcedureCall/definition"/>
       </genClasses>
       <genClasses ecoreClass="logo.ecore#//statement/Block">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference logo.ecore#//statement/Block/statements"/>

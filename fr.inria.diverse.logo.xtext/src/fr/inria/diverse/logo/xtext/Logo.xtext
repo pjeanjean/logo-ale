@@ -58,7 +58,7 @@ ProcedureDefinition returns statement::ProcedureDefinition:
 	'to' name=ID (parameters+=Parameter)* (statements+=Statement)+ 'end';
 
 ProcedureCall returns statement::ProcedureCall:
-	name=ID (parameterValues+=Expression)*;
+	definition=[statement::ProcedureDefinition] (parameterValues+=Expression)*;
 
 Block returns statement::Block:
 	'[' (statements+=Statement)+ ']';
