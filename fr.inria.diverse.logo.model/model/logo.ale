@@ -50,9 +50,15 @@ class Turtle {
 	double direction;
 	boolean pendown;
 	logolang::Canvas canvas;
+	
+	def String toString() {
+		result := ('x: ' + self.xpos + ' | y: ' + self.ypos
+			+ ' | direction: ' + self.direction
+			+ ' | canvas: ' + self.canvas.segments->collect(seg | seg.representation()));
+	}
 }
 
-open class Interpreter {       
+open class Logo {       
 	logolang::Turtle turtle;
 	logolang::SymbolTable st;
 
@@ -71,37 +77,32 @@ open class Interpreter {
 	
 	@main
 	def void run() {
-		self.instructions->last().interpret(self.turtle, self.st);
-	}
-}
-
-open class Logo {
-	@step
-	def void interpret(logolang::Turtle turtle, logolang::SymbolTable st) {
 		for (s in self.statements) {
-			s.execute(turtle, st);
-		}
+			s.execute(self.turtle, self.st);
+		}		
 	}
 }
 
 open class Statement {
+	@repl_turtle_toString
 	@step
-	def void interpret(logolang::Turtle turtle, logolang::SymbolTable st) {
-		self.execute(turtle, st);
-		('x: ' + turtle.xpos + ' | y: ' + turtle.ypos + ' | direction: ' + turtle.direction
-			+ ' | canvas: ' + turtle.canvas.segments->collect(seg | seg.representation())).log();
+	def void execute(Turtle turtle, SymbolTable st) {
+		'ERROR: Unknown statement'.log();
 	}
 }
 
 open class logo.Expression {
+	@repl_output_toString
 	@step
-	def void interpret(logolang::Turtle turtle, logolang::SymbolTable st) {
-		logo::Value res := self.compute(st);
-		if (res = null) {
-			'null'.log();
-		} else {
-			res.value.log();
-		}
+	def Value compute(SymbolTable st) {
+		'ERROR: Unknown expression'.log();		
+		result := null;
+	}
+}
+
+open class logo.Value {
+	def String toString() {
+		result := '' + self.value;
 	}
 }
 

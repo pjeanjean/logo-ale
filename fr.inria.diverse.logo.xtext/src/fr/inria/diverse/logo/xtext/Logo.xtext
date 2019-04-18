@@ -13,12 +13,6 @@ import "platform:/resource/fr.inria.diverse.logo.model/model/logo.ecore#//statem
 import "platform:/resource/fr.inria.diverse.logo.model/model/logo.ecore#//expression/binary" as binary
 import "platform:/resource/fr.inria.diverse.logo.model/model/logo.ecore#//expression/unary" as unary
 
-Interpreter returns logo::Interpreter:
-	{logo::Interpreter} instructions+=InterpretableInstruction*;
-
-InterpretableInstruction returns logo::InterpretableInstruction:
-	'~' (Expression|Statement);
-	
 Logo returns logo::Logo:
 	(statements+=Statement)+;
 

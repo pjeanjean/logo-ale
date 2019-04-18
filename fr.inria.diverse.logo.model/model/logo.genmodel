@@ -22,10 +22,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute logo.ecore#//Symbol/name"/>
     </genClasses>
     <genClasses image="false" ecoreClass="logo.ecore#//Value"/>
-    <genClasses image="false" ecoreClass="logo.ecore#//InterpretableInstruction"/>
-    <genClasses ecoreClass="logo.ecore#//Interpreter">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference logo.ecore#//Interpreter/instructions"/>
-    </genClasses>
     <nestedGenPackages prefix="Statement" disposableProviderFactory="true" ecorePackage="logo.ecore#//statement">
       <genClasses ecoreClass="logo.ecore#//statement/Right">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference logo.ecore#//statement/Right/angle"/>
